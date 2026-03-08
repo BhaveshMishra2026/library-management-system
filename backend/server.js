@@ -8,10 +8,10 @@ app.use(cors());
 app.use(express.json());
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
+  host: "sql12.freesqldatabase.com",
+  user: "sql12819299",
   password: "",
-  database: "library_db"
+  database: "sql12819299"
 });
 
 db.connect((err)=>{
