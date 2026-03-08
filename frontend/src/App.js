@@ -38,8 +38,10 @@ setBooks(response.data);
 },[]);
 
   return (
-    <div className="container" style={{textAlign:"center",marginTop:"50px"}}>
-      <h1>Library Management System</h1>
+    <div className="container">
+      <h1>LIBRARY MANAGEMENT SYSTEM</h1>
+
+      <hr/>
 
       <input
         placeholder="Book Title"
@@ -56,6 +58,7 @@ setBooks(response.data);
       <br/><br/>
 
       <button onClick={addBook}>Add Book</button>
+      <hr/>
 
       <h2>Book List</h2>
 
