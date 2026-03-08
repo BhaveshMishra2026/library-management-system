@@ -11,7 +11,7 @@ function App() {
   const [author,setAuthor] = useState("");
 
   const addBook = () => {
-    axios.post("http://localhost:5000/addBook",{
+    axios.post("https://book-api-vj3a.onrender.com/addBook",{
       title:title,
       author:author
     })
@@ -22,7 +22,7 @@ function App() {
 
   const deleteBook = (id) => {
 
-axios.delete("http://localhost:5000/deleteBook/"+id)
+axios.delete("https://book-api-vj3a.onrender.com/deleteBook/"+id)
 .then(()=>{
 alert("Book Deleted");
 window.location.reload();
@@ -31,7 +31,7 @@ window.location.reload();
 };
 
   useEffect(()=>{
-axios.get("http://localhost:5000/books")
+axios.get("https://book-api-vj3a.onrender.com/books")
 .then((response)=>{
 setBooks(response.data);
 });
