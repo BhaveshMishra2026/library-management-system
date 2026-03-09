@@ -59,3 +59,7 @@ background-color:red;
 .delete-btn:hover{
 background-color:darkred;
 }
+
+#header{
+    background-color: #007bff;
+}

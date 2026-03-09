@@ -39,9 +39,11 @@ setBooks(response.data);
 
   return (
     <div className="container">
+      <hr id="header">
       <h1>LIBRARY MANAGEMENT SYSTEM</h1>
+      <p>~Submitted by Bhavesh mishra </p>
 
-      <hr/>
+      </hr>
 
       <input
         placeholder="Book Title"
