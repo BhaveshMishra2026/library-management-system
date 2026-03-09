@@ -14,6 +14,14 @@ const db = mysql.createConnection({
   database : "sql12819299"
 });
 
+db.connect((err) => {
+  if (err) {
+    console.log("Database connection failed:", err);
+  } else {
+    console.log("Database connected");
+  }
+});
+
 db.connect((err)=>{
 if(err){
 console.log(err);
