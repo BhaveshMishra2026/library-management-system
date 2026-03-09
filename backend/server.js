@@ -55,12 +55,10 @@ app.get("/books",(req,res)=>{
 
 db.query("SELECT * FROM books",(err,result)=>{
 if(err){
-console.log(err);
-}else{
-res.send(result);
+  return res.status(500).send(err);
 }
+res.send(result);
 });
-
 });
 
 app.listen(5000,()=>{
