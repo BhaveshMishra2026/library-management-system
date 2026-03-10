@@ -7,12 +7,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
- host: "sql12.freesqldatabase.com",
-  user : "sql12819299",
-  password : "sABVDH3sss",
-  database : "sql12819299"
+const { Pool } = require("pg");
+
+const pool = new Pool({
+  connectionString: "postgresql://postgres:[N5xLF2OzGiIblznn]@db.cdubbljidemvblbvtaxl.supabase.co:5432/postgres",
+  ssl: { rejectUnauthorized: false }
 });
+
 
 db.connect((err) => {
   if (err) {
@@ -34,52 +35,37 @@ app.get("/",(req,res)=>{
 res.send("Server Running");
 });
 
-app.post("/addBook",(req,res)=>{
 
-const title = req.body.title;
-const author = req.body.author;
 
-const sql = "INSERT INTO books (title,author) VALUES (?,?)";
-
-db.query(sql,[title,author],(err,result)=>{
-if(err){
-console.log(err);
-}else{
-res.send("Book Added");
-}
+app.get("/books", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM books");
+    res.json(result.rows);
+  } catch (err) {
+    console.log(err);
+    res.send({ error: true });
+  }
 });
 
+app.post("/addBook", async (req, res) => {
+  try {
+    const { title, author } = req.body;
+    await pool.query(
+      "INSERT INTO books(title,author) VALUES($1,$2)",
+      [title, author]
+    );
+    res.send("Book Added");
+  } catch (err) {
+    console.log(err);
+  }
 });
 
-app.get("/books",(req,res)=>{
-
-db.query("SELECT * FROM books",(err,result)=>{
-if(err){
-  return res.status(500).send(err);
-}
-res.send(result);
-});
-});
-
-app.listen(5000,()=>{
-console.log("Server running on port 5000");
-});
-
-
-
-app.delete("/deleteBook/:id",(req,res)=>{
-
-const id = req.params.id;
-
-db.query("DELETE FROM books WHERE id = ?",
-[id],
-(err,result)=>{
-if(err){
-console.log(err);
-}else{
-res.send("Book Deleted");
-}
-}
-);
-
+app.delete("/deleteBook/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    await pool.query("DELETE FROM books WHERE id=$1", [id]);
+    res.send("Book Deleted");
+  } catch (err) {
+    console.log(err);
+  }
 });
