@@ -39,11 +39,11 @@ setBooks(response.data);
 
   return (
     <div className="container">
-      <hr id="header">
+  
       <h1>LIBRARY MANAGEMENT SYSTEM</h1>
       <p>~Submitted by Bhavesh mishra </p>
 
-      </hr>
+      <hr/>
 
       <input
         placeholder="Book Title"
@@ -66,12 +66,14 @@ setBooks(response.data);
 
 <table border="1" align="center">
 
+
 <tr>
 <th>ID</th>
 <th>Title</th>
 <th>Author</th>
 <th>Action</th>
 </tr>
+
 
 {books.map((book)=>{
 return(
