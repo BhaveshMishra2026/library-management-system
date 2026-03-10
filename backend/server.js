@@ -15,21 +15,7 @@ const pool = new Pool({
 });
 
 
-db.connect((err) => {
-  if (err) {
-    console.log("Database connection failed:", err);
-  } else {
-    console.log("Database connected");
-  }
-});
 
-db.connect((err)=>{
-if(err){
-console.log(err);
-}else{
-console.log("Connected to MySQL");
-}
-});
 
 app.get("/",(req,res)=>{
 res.send("Server Running");
