@@ -10,7 +10,7 @@ app.use(express.json());
 const { Pool } = require("pg");
 
 const pool = new Pool({
-  connectionString: "postgresql://postgres:[N5xLF2OzGiIblznn]@db.cdubbljidemvblbvtaxl.supabase.co:5432/postgres",
+  connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
