@@ -71,8 +71,7 @@ app.delete("/deleteBook/:id",(req,res)=>{
 
 const id = req.params.id;
 
-db.query(
-"DELETE FROM books WHERE id = ?",
+db.query("DELETE FROM books WHERE id = ?",
 [id],
 (err,result)=>{
 if(err){
