@@ -1,64 +1,84 @@
 const express = require("express");
-const mysql = require("mysql2");
 const cors = require("cors");
+const { Pool } = require("pg");
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
-const { Pool } = require("pg");
-
+// DATABASE CONNECTION
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
+// 🔐 Simple Login API (hardcoded)
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
 
-
-
-app.get("/",(req,res)=>{
-res.send("Server Running");
+  if (email === "admin@gmail.com" && password === "1234") {
+    res.json({ token: "mytoken123" });
+  } else {
+    res.send("Invalid credentials");
+  }
 });
 
-app.get("/books", (req, res) => {
+// 🔒 Token Middleware
+const verifyToken = (req, res, next) => {
+  const token = req.headers["authorization"];
+
+  if (token === "mytoken123") {
+    next();
+  } else {
+    res.send("Access Denied");
+  }
+};
+
+// 📚 Get Books (Protected)
+app.get("/books", verifyToken, (req, res) => {
   pool.query("SELECT * FROM books", (err, result) => {
     if (err) {
-      console.log(err);  // 👈 terminal में error दिखेगा
-      res.send({ error: err.message });  // 👈 असली error दिखेगा
+      console.log(err);
+      res.send({ error: true });
     } else {
       res.send(result.rows);
     }
   });
 });
 
+// ➕ Add Book (Protected)
+app.post("/addBook", verifyToken, (req, res) => {
+  const { title, author } = req.body;
 
-
-app.post("/addBook", async (req, res) => {
-  try {
-    const { title, author } = req.body;
-    await pool.query(
-      "INSERT INTO books(title,author) VALUES($1,$2)",
-      [title, author]
-    );
-    res.send("Book Added");
-  } catch (err) {
-    console.log(err);
-  }
+  pool.query(
+    "INSERT INTO books (title, author) VALUES ($1, $2)",
+    [title, author],
+    (err) => {
+      if (err) {
+        console.log(err);
+        res.send({ error: true });
+      } else {
+        res.send("Book Added");
+      }
+    }
+  );
 });
 
-app.delete("/deleteBook/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    await pool.query("DELETE FROM books WHERE id=$1", [id]);
-    res.send("Book Deleted");
-  } catch (err) {
-    console.log(err);
-  }
+// ❌ Delete Book (Protected)
+app.delete("/deleteBook/:id", verifyToken, (req, res) => {
+  const id = req.params.id;
+
+  pool.query("DELETE FROM books WHERE id=$1", [id], (err) => {
+    if (err) {
+      console.log(err);
+      res.send({ error: true });
+    } else {
+      res.send("Book Deleted");
+    }
+  });
 });
 
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log("Server running on port", PORT);
+// SERVER START
+app.listen(5000, () => {
+  console.log("Server running...");
 });
