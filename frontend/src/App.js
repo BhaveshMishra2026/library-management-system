@@ -19,7 +19,7 @@ function App() {
       password
     }).then((res) => {
       if(res.data.token){
-        localStorage.setItem("token", res.data.token);
+        sessionStorage.setItem("token", res.data.token);
         setIsLoggedIn(true);
       } else {
         alert("Wrong credentials");
@@ -29,7 +29,7 @@ function App() {
 
   // CHECK LOGIN
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true);
     }
@@ -40,7 +40,7 @@ function App() {
     if(isLoggedIn){
       axios.get("https://book-api-vj3a.onrender.com/books", {
         headers: {
-          Authorization: localStorage.getItem("token")
+          Authorization: sessionStorage.getItem("token")
         }
       }).then((res) => {
         if(Array.isArray(res.data)){
@@ -56,7 +56,7 @@ function App() {
       { title, author },
       {
         headers: {
-          Authorization: localStorage.getItem("token")
+          Authorization: sessionStorage.getItem("token")
         }
       }
     ).then(() => {
@@ -69,7 +69,7 @@ function App() {
   const deleteBook = (id) => {
     axios.delete(`https://book-api-vj3a.onrender.com/deleteBook/${id}`, {
       headers: {
-        Authorization: localStorage.getItem("token")
+        Authorization: sessionStorage.getItem("token")
       }
     }).then(() => {
       alert("Deleted");
