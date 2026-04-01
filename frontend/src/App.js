@@ -30,11 +30,17 @@ window.location.reload();
 
 };
 
-  useEffect(()=>{
-axios.get("https://book-api-vj3a.onrender.com/books")
-.then((response)=>{
-setBooks(response.data);
-});
+useEffect(()=>{
+  axios.get("https://book-api-vj3a.onrender.com/books")
+  .then((response)=>{
+    console.log(response.data);  // 👈 debug
+
+    if(Array.isArray(response.data)){
+      setBooks(response.data);
+    } else {
+      setBooks([]);  // error aaya to empty array
+    }
+  });
 },[]);
 
   return (
@@ -75,7 +81,8 @@ setBooks(response.data);
 </tr>
 
 
-{books.map((book)=>{
+{Array.isArray(books) &&
+ books.map((book)=>{
 return(
 <tr key={book.id}>
 <td>{book.id}</td>
