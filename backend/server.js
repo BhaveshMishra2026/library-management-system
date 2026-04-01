@@ -21,17 +21,18 @@ app.get("/",(req,res)=>{
 res.send("Server Running");
 });
 
-
-
-app.get("/books", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM books");
-    res.json(result.rows);
-  } catch (err) {
-    console.log(err);
-    res.send({ error: true });
-  }
+app.get("/books", (req, res) => {
+  pool.query("SELECT * FROM books", (err, result) => {
+    if (err) {
+      console.log(err);  // 👈 terminal में error दिखेगा
+      res.send({ error: err.message });  // 👈 असली error दिखेगा
+    } else {
+      res.send(result.rows);
+    }
+  });
 });
+
+
 
 app.post("/addBook", async (req, res) => {
   try {
