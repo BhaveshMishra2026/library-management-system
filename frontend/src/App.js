@@ -105,13 +105,20 @@ function App() {
   return (
     <div className="container">
       <h1>LIBRARY MANAGEMENT SYSTEM</h1>
+      <p>~Submitted by Bhavesh Mishra</p>
+      <br/>
+      <hr/>
 
+
+    <label>Enter Book Name</label>
       <input
         placeholder="Book Title"
         onChange={(e) => setTitle(e.target.value)}
       />
-      <br /><br />
+      <br />
+      <br />
 
+    <label>Enter Author Name</label>
       <input
         placeholder="Author"
         onChange={(e) => setAuthor(e.target.value)}
@@ -119,6 +126,8 @@ function App() {
       <br /><br />
 
       <button onClick={addBook}>Add Book</button>
+      <br/>
+      <hr/>
 
       <h2>Book List</h2>
 
