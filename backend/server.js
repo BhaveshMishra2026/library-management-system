@@ -6,13 +6,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// DATABASE CONNECTION
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
-// 🔐 Simple Login API (hardcoded)
+// LOGIN
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
@@ -23,62 +22,62 @@ app.post("/login", (req, res) => {
   }
 });
 
-// 🔒 Token Middleware
+// TOKEN
 const verifyToken = (req, res, next) => {
   const token = req.headers["authorization"];
-
-  if (token === "mytoken123") {
-    next();
-  } else {
-    res.send("Access Denied");
-  }
+  if (token === "mytoken123") next();
+  else res.send("Access Denied");
 };
 
-// 📚 Get Books (Protected)
+// BOOKS
 app.get("/books", verifyToken, (req, res) => {
-  pool.query("SELECT * FROM books", (err, result) => {
-    if (err) {
-      console.log(err);
-      res.send({ error: true });
-    } else {
-      res.send(result.rows);
-    }
+  pool.query("SELECT * FROM books ORDER BY id ASC", (err, result) => {
+    if (err) res.send({ error: true });
+    else res.send(result.rows);
   });
 });
 
-// ➕ Add Book (Protected)
 app.post("/addBook", verifyToken, (req, res) => {
   const { title, author } = req.body;
 
   pool.query(
-    "INSERT INTO books (title, author) VALUES ($1, $2)",
+    "INSERT INTO books (title, author) VALUES ($1,$2) RETURNING *",
     [title, author],
-    (err) => {
-      if (err) {
-        console.log(err);
-        res.send({ error: true });
-      } else {
-        res.send("Book Added");
-      }
+    (err, result) => {
+      if (err) res.send({ error: true });
+      else res.send(result.rows[0]);
     }
   );
 });
 
-// ❌ Delete Book (Protected)
 app.delete("/deleteBook/:id", verifyToken, (req, res) => {
   const id = req.params.id;
 
   pool.query("DELETE FROM books WHERE id=$1", [id], (err) => {
-    if (err) {
-      console.log(err);
-      res.send({ error: true });
-    } else {
-      res.send("Book Deleted");
-    }
+    if (err) res.send({ error: true });
+    else res.send("Deleted");
   });
 });
 
-// SERVER START
-app.listen(5000, () => {
-  console.log("Server running...");
+// STUDENTS
+app.get("/students", verifyToken, (req, res) => {
+  pool.query("SELECT * FROM students ORDER BY id ASC", (err, result) => {
+    if (err) res.send({ error: true });
+    else res.send(result.rows);
+  });
 });
+
+app.post("/addStudent", verifyToken, (req, res) => {
+  const { name, course, email } = req.body;
+
+  pool.query(
+    "INSERT INTO students (name, course, email) VALUES ($1,$2,$3) RETURNING *",
+    [name, course, email],
+    (err, result) => {
+      if (err) res.send({ error: true });
+      else res.send(result.rows[0]);
+    }
+  );
+});
+
+app.listen(5000, () => console.log("Server running..."));
