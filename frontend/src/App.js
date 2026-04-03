@@ -50,16 +50,37 @@ function App() {
       axios.get("https://book-api-vj3a.onrender.com/books", {
         headers: { Authorization: sessionStorage.getItem("token") }
       }).then(res => {
-        setBooks(res.data);
-        setTotalBooks(res.data.length);
+        if (Array.isArray(res.data)) {
+  setBooks(res.data);
+  setTotalBooks(res.data.length);
+} else {
+  setBooks([]);
+  setTotalBooks(0);
+}
       });
+
+      //students
+      useEffect(() => {
+  console.log(students);
+}, [students]);
 
       axios.get("https://book-api-vj3a.onrender.com/students", {
         headers: { Authorization: sessionStorage.getItem("token") }
       }).then(res => {
-        setStudents(res.data);
-        setTotalStudents(res.data.length);
-      });
+
+  if (Array.isArray(res.data)) {
+    setStudents(res.data);
+    setTotalStudents(res.data.length);
+  } else {
+    setStudents([]);
+    setTotalStudents(0);
+  }
+
+})
+.catch(() => {
+  setStudents([]);
+  setTotalStudents(0);
+});
     }
   }, [isLoggedIn]);
 
@@ -195,7 +216,6 @@ function App() {
     </div>
   );
 }
-console.log(students);
 
 
 export default App;
