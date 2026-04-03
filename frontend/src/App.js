@@ -34,11 +34,10 @@ function App() {
     });
   };
 
-  // हर refresh पर logout
+  // Auto login if token exists
   useEffect(() => {
-    const token =
-    sessionStorage.getItem("token");
-    if (token){
+    const token = sessionStorage.getItem("token");
+    if (token) {
       setIsLoggedIn(true);
     }
   }, []);
@@ -47,38 +46,42 @@ function App() {
   useEffect(() => {
     if (isLoggedIn) {
 
+      // BOOKS
       axios.get("https://book-api-vj3a.onrender.com/books", {
         headers: { Authorization: sessionStorage.getItem("token") }
-      }).then(res => {
+      })
+      .then(res => {
         if (Array.isArray(res.data)) {
-  setBooks(res.data);
-  setTotalBooks(res.data.length);
-} else {
-  setBooks([]);
-  setTotalBooks(0);
-}
+          setBooks(res.data);
+          setTotalBooks(res.data.length);
+        } else {
+          setBooks([]);
+          setTotalBooks(0);
+        }
+      })
+      .catch(() => {
+        setBooks([]);
+        setTotalBooks(0);
       });
 
-      //students
-      useEffect(() => {
-  console.log(students);
-}, [students]);
-
-  axios.get("https://book-api-vj3a.onrender.com/students", {
+      // STUDENTS
+      axios.get("https://book-api-vj3a.onrender.com/students", {
         headers: { Authorization: sessionStorage.getItem("token") }
-      }).then(res => {
-       if (Array.isArray(res.data)) {
-       setStudents(res.data);
-       setTotalStudents(res.data.length);
-  } else {
-    setStudents([]);
-    setTotalStudents(0);
-  }
-})
-.catch(() => {
-  setStudents([]);
-  setTotalStudents(0);
-});
+      })
+      .then(res => {
+        if (Array.isArray(res.data)) {
+          setStudents(res.data);
+          setTotalStudents(res.data.length);
+        } else {
+          setStudents([]);
+          setTotalStudents(0);
+        }
+      })
+      .catch(() => {
+        setStudents([]);
+        setTotalStudents(0);
+      });
+
     }
   }, [isLoggedIn]);
 
@@ -88,8 +91,10 @@ function App() {
       { title, author },
       { headers: { Authorization: sessionStorage.getItem("token") } }
     ).then(res => {
-      setBooks([...books, res.data]);
-      setTotalBooks(totalBooks + 1);
+      if (res.data) {
+        setBooks(prev => [...prev, res.data]);
+        setTotalBooks(prev => prev + 1);
+      }
     });
   };
 
@@ -98,8 +103,8 @@ function App() {
     axios.delete(`https://book-api-vj3a.onrender.com/deleteBook/${id}`, {
       headers: { Authorization: sessionStorage.getItem("token") }
     }).then(() => {
-      setBooks(books.filter(b => b.id !== id));
-      setTotalBooks(totalBooks - 1);
+      setBooks(prev => prev.filter(b => b.id !== id));
+      setTotalBooks(prev => prev - 1);
     });
   };
 
@@ -109,30 +114,31 @@ function App() {
       { name, course, email: emailStudent },
       { headers: { Authorization: sessionStorage.getItem("token") } }
     ).then(res => {
-      setStudents([...students, res.data]);
-      setTotalStudents(totalStudents + 1);
+      if (res.data) {
+        setStudents(prev => [...prev, res.data]);
+        setTotalStudents(prev => prev + 1);
+      }
     });
   };
 
-  //logout
+  // LOGOUT
   const logout = () => {
     sessionStorage.clear();
     setIsLoggedIn(false);
   };
 
   // LOGIN UI
-  if (!Array.isArray(books) || !
-    Array.isArray(students)) {
-    return <h2>loading...</h2> ;(
+  if (!isLoggedIn) {
+    return (
       <div className="login">
         <h1 className="h1">LIBRARY MANAGEMENT SYSTEM</h1>
         <h2>Login</h2>
-        <label>Enter the Email</label>
+
         <input placeholder="Email" onChange={(e)=>setEmail(e.target.value)} />
         <br/>
-        <label>Enter the Password</label>
         <input type="password" placeholder="Password" onChange={(e)=>setPassword(e.target.value)} />
         <br/>
+
         <button onClick={login}>Login</button>
       </div>
     );
@@ -155,36 +161,46 @@ function App() {
           <p>{totalStudents}</p>
         </div>
       </div>
+
       <hr/>
 
+      {/* ADD BOOK */}
       <h2>Add Book</h2>
       <input placeholder="Title" onChange={(e)=>setTitle(e.target.value)} />
       <input placeholder="Author" onChange={(e)=>setAuthor(e.target.value)} />
       <button onClick={addBook}>Add Book</button>
+
       <hr/>
 
+      {/* BOOKS TABLE */}
       <h2>Books</h2>
       <table>
         <thead>
           <tr><th>ID</th><th>Title</th><th>Author</th><th>Action</th></tr>
         </thead>
         <tbody>
-          {Array.isArray(books) ?
-          books.map(b => (
-            <tr key={b.id}>
-              <td>{b.id}</td>
-              <td>{b.title}</td>
-              <td>{b.author}</td>
-              <td>
-                <button className="delete" onClick={()=>deleteBook(b.id)}>Delete</button>
-              </td>
+          {Array.isArray(books) && books.length > 0 ? (
+            books.map(b => (
+              <tr key={b.id}>
+                <td>{b.id}</td>
+                <td>{b.title}</td>
+                <td>{b.author}</td>
+                <td>
+                  <button className="delete" onClick={()=>deleteBook(b.id)}>Delete</button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="4">No books data</td>
             </tr>
-          )) :<p>No books data</p>}
+          )}
         </tbody>
       </table>
 
       <hr/>
 
+      {/* ADD STUDENT */}
       <h2>Student Admission</h2>
       <input placeholder="Name" onChange={(e)=>setName(e.target.value)} />
       <input placeholder="Course" onChange={(e)=>setCourse(e.target.value)} />
@@ -192,29 +208,36 @@ function App() {
       <button onClick={addStudent}>Add Student</button>
 
       <hr/>
+
+      {/* STUDENTS TABLE */}
       <h2>Students</h2>
       <table>
         <thead>
           <tr><th>ID</th><th>Name</th><th>Course</th><th>Email</th></tr>
         </thead>
         <tbody>
-          {Array.isArray(students) ?
-          students.map(s => (
-            <tr key={s.id}>
-              <td>{s.id}</td>
-              <td>{s.name}</td>
-              <td>{s.course}</td>
-              <td>{s.email}</td>
+          {Array.isArray(students) && students.length > 0 ? (
+            students.map(s => (
+              <tr key={s.id}>
+                <td>{s.id}</td>
+                <td>{s.name}</td>
+                <td>{s.course}</td>
+                <td>{s.email}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="4">No students data</td>
             </tr>
-          )) :<p>No students data</p>}
+          )}
         </tbody>
       </table>
 
-          <button onClick={logout}>Logout</button>
-    
+      <br/>
+      <button onClick={logout}>Logout</button>
+
     </div>
   );
 }
-
 
 export default App;
