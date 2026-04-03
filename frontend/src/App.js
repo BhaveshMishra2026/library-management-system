@@ -95,9 +95,14 @@ function App() {
   if (!isLoggedIn) {
     return (
       <div className="login">
+        <h1 className="h1">LIBRARY MANAGEMENT SYSTEM</h1>
         <h2>Login</h2>
+        <label>Enter the Email</label>
         <input placeholder="Email" onChange={(e)=>setEmail(e.target.value)} />
+        <br/>
+        <label>Enter the Password</label>
         <input type="password" placeholder="Password" onChange={(e)=>setPassword(e.target.value)} />
+        <br/>
         <button onClick={login}>Login</button>
       </div>
     );
@@ -106,7 +111,8 @@ function App() {
   return (
     <div className="container">
 
-      <h1>Dashboard</h1>
+      <h1 className="h1">LIBRARY MANAGEMENT SYSTEM</h1>
+      <h2>Dashboard</h2>
 
       <div className="dashboard">
         <div className="card">
@@ -119,11 +125,13 @@ function App() {
           <p>{totalStudents}</p>
         </div>
       </div>
+      <hr/>
 
       <h2>Add Book</h2>
       <input placeholder="Title" onChange={(e)=>setTitle(e.target.value)} />
       <input placeholder="Author" onChange={(e)=>setAuthor(e.target.value)} />
       <button onClick={addBook}>Add Book</button>
+      <hr/>
 
       <h2>Books</h2>
       <table>
@@ -144,12 +152,15 @@ function App() {
         </tbody>
       </table>
 
+      <hr/>
+
       <h2>Student Admission</h2>
       <input placeholder="Name" onChange={(e)=>setName(e.target.value)} />
       <input placeholder="Course" onChange={(e)=>setCourse(e.target.value)} />
       <input placeholder="Email" onChange={(e)=>setEmailStudent(e.target.value)} />
       <button onClick={addStudent}>Add Student</button>
 
+      <hr/>
       <h2>Students</h2>
       <table>
         <thead>

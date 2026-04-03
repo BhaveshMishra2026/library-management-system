@@ -1,6 +1,6 @@
 body {
   font-family: Arial;
-  background: #f4f6f9;
+  background: #a3c6fb;
 }
 
 .container {
@@ -11,6 +11,7 @@ body {
 .login {
   text-align: center;
   margin-top: 100px;
+  background-color: rgb(197, 248, 246);
 }
 
 input {
@@ -63,7 +64,7 @@ td, th {
 }
 
 .card {
-  background: white;
+  background: rgb(248, 186, 186);
   padding: 20px;
   width: 200px;
   border-radius: 10px;
@@ -73,4 +74,8 @@ td, th {
 .card p {
   font-size: 24px;
   font-weight: bold;
+}
+
+.h1{
+    background-color: rgb(249, 242, 146);
 }
