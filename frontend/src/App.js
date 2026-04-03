@@ -64,18 +64,16 @@ function App() {
   console.log(students);
 }, [students]);
 
-      axios.get("https://book-api-vj3a.onrender.com/students", {
+  axios.get("https://book-api-vj3a.onrender.com/students", {
         headers: { Authorization: sessionStorage.getItem("token") }
       }).then(res => {
-
-  if (Array.isArray(res.data)) {
-    setStudents(res.data);
-    setTotalStudents(res.data.length);
+       if (Array.isArray(res.data)) {
+       setStudents(res.data);
+       setTotalStudents(res.data.length);
   } else {
     setStudents([]);
     setTotalStudents(0);
   }
-
 })
 .catch(() => {
   setStudents([]);
@@ -123,8 +121,9 @@ function App() {
   };
 
   // LOGIN UI
-  if (!isLoggedIn) {
-    return (
+  if (!Array.isArray(books) || !
+    Array.isArray(students)) {
+    return <h2>loading...</h2> ;(
       <div className="login">
         <h1 className="h1">LIBRARY MANAGEMENT SYSTEM</h1>
         <h2>Login</h2>
