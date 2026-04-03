@@ -139,7 +139,8 @@ function App() {
           <tr><th>ID</th><th>Title</th><th>Author</th><th>Action</th></tr>
         </thead>
         <tbody>
-          {books.map(b => (
+          {Array.isArray(books) ?
+          books.map(b => (
             <tr key={b.id}>
               <td>{b.id}</td>
               <td>{b.title}</td>
@@ -148,7 +149,7 @@ function App() {
                 <button className="delete" onClick={()=>deleteBook(b.id)}>Delete</button>
               </td>
             </tr>
-          ))}
+          )) :<p>No books data</p>}
         </tbody>
       </table>
 
@@ -167,19 +168,22 @@ function App() {
           <tr><th>ID</th><th>Name</th><th>Course</th><th>Email</th></tr>
         </thead>
         <tbody>
-          {students.map(s => (
+          {Array.isArray(students) ?
+          students.map(s => (
             <tr key={s.id}>
               <td>{s.id}</td>
               <td>{s.name}</td>
               <td>{s.course}</td>
               <td>{s.email}</td>
             </tr>
-          ))}
+          )) :<p>No students data</p>}
         </tbody>
       </table>
 
     </div>
   );
 }
+console.log(students);
+
 
 export default App;
