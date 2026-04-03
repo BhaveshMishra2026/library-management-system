@@ -36,7 +36,11 @@ function App() {
 
   // हर refresh पर logout
   useEffect(() => {
-    sessionStorage.clear();
+    const token =
+    sessionStorage.getItem("token");
+    if (token){
+      setIsLoggedIn(true);
+    }
   }, []);
 
   // FETCH DATA
@@ -89,6 +93,12 @@ function App() {
       setStudents([...students, res.data]);
       setTotalStudents(totalStudents + 1);
     });
+  };
+
+  //logout
+  const logout = () => {
+    sessionStorage.clear();
+    setIsLoggedIn(false);
   };
 
   // LOGIN UI
@@ -180,6 +190,8 @@ function App() {
         </tbody>
       </table>
 
+          <button onClick={logout}>Logout</button>
+    
     </div>
   );
 }
